@@ -12,8 +12,6 @@ const authRoutes = require("./routes/auth");
 const dishRoutes = require("./routes/dishes");
 const orderRoutes = require("./routes/Orders");
 const profileRoutes = require("./routes/profile");
-const tableRoutes = require("./routes/tabels");
-app.use("/tables", tableRoutes);
 
 const app = express();
 
