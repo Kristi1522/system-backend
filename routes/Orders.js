@@ -148,8 +148,37 @@ router.get("/daily-summary", protect, adminOnly, async (req, res) => {
   }
 });
 
+// 🔹 Përmbledhje sipas datës – për grafik
+router.get("/revenue-by-date", protect, adminOnly, async (req, res) => {
+  try {
+    const result = await Order.aggregate([
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+          },
+          total: { $sum: "$totalPrice" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          total: 1
+        }
+      },
+      { $sort: { date: 1 } }
+    ]);
+
+    res.json(result);
+  } catch (err) {
+    console.error("❌ Gabim në /orders/revenue-by-date:", err.message);
+    res.status(500).json({ message: "Gabim gjatë përmbledhjes sipas datës" });
+  }
+});
+
 // 🔹 Fshi një porosi – vetëm për admin
-router.delete("/:id", protect, adminOnly, async (req, res) => {
+router.delete(":id", protect, adminOnly, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
 
