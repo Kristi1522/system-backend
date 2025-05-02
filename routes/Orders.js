@@ -18,7 +18,7 @@ router.post("/", protect, async (req, res) => {
       user: req.user._id,
       items,
       totalPrice,
-      shiftClosed: false
+      shiftClosed: false,
     });
 
     res.status(201).json(newOrder);
@@ -37,7 +37,7 @@ router.get("/my", protect, async (req, res) => {
     neser.setDate(neser.getDate() + 1);
 
     const orders = await Order.find({
-      createdAt: { $gte: sot, $lt: neser }
+      createdAt: { $gte: sot, $lt: neser },
     })
       .populate("user")
       .sort({ createdAt: -1 });
@@ -61,7 +61,7 @@ router.put("/close-shift", protect, async (req, res) => {
       {
         user: req.user._id,
         createdAt: { $gte: sot, $lt: neser },
-        shiftClosed: false
+        shiftClosed: false,
       },
       { $set: { shiftClosed: true } }
     );
@@ -98,12 +98,12 @@ router.get("/summary", protect, adminOnly, async (req, res) => {
     res.json({
       totalOrders,
       totalIncome,
-      orders: orders.map(order => ({
+      orders: orders.map((order) => ({
         _id: order._id,
         total: order.totalPrice,
         userEmail: order.user?.email || "I panjohur",
-        createdAt: order.createdAt
-      }))
+        createdAt: order.createdAt,
+      })),
     });
   } catch (err) {
     console.error("❌ Gabim në /orders/summary:", err.message);
@@ -121,12 +121,12 @@ router.get("/daily-summary", protect, adminOnly, async (req, res) => {
     neser.setDate(sot.getDate() + 1);
 
     const ordersToday = await Order.find({
-      createdAt: { $gte: sot, $lt: neser }
+      createdAt: { $gte: sot, $lt: neser },
     }).populate("user");
 
     const summary = {};
 
-    ordersToday.forEach(order => {
+    ordersToday.forEach((order) => {
       const email = order.user?.email || "I panjohur";
       if (!summary[email]) {
         summary[email] = { total: 0, count: 0 };
@@ -139,12 +139,41 @@ router.get("/daily-summary", protect, adminOnly, async (req, res) => {
       Object.entries(summary).map(([email, data]) => ({
         email,
         total: data.total,
-        count: data.count
+        count: data.count,
       }))
     );
   } catch (err) {
     console.error("❌ Gabim në /orders/daily-summary:", err.message);
     res.status(500).json({ message: "Gabim gjatë përmbledhjes ditore" });
+  }
+});
+
+// 🔹 Përmbledhje sipas datës – për grafik
+router.get("/revenue-by-date", protect, adminOnly, async (req, res) => {
+  try {
+    const result = await Order.aggregate([
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+          },
+          total: { $sum: "$totalPrice" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          total: 1,
+        },
+      },
+      { $sort: { date: 1 } },
+    ]);
+
+    res.json(result);
+  } catch (err) {
+    console.error("❌ Gabim në /orders/revenue-by-date:", err.message);
+    res.status(500).json({ message: "Gabim gjatë përmbledhjes sipas datës" });
   }
 });
 
