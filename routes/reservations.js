@@ -3,34 +3,36 @@ const router = express.Router();
 const Reservation = require('../models/Reservation');
 const protect = require('../middleware/authMiddleware');
 
-// Krijon një rezervim
+// POST - krijo rezervim të ri
 router.post('/', protect, async (req, res) => {
   const { date, people, note } = req.body;
 
   if (!date || !people) {
-    return res.status(400).json({ message: 'Plotëso datën dhe numrin e personave.' });
+    return res.status(400).json({ message: 'Plotëso të gjitha fushat.' });
   }
 
   try {
-    const newReservation = await Reservation.create({
+    const reservation = await Reservation.create({
       user: req.user._id,
       date,
       people,
-      note
+      note,
     });
 
-    res.status(201).json(newReservation);
-  } catch (error) {
+    res.status(201).json(reservation);
+  } catch (err) {
+    console.error('Gabim te POST /reservations:', err.message);
     res.status(500).json({ message: 'Gabim gjatë krijimit të rezervimit.' });
   }
 });
 
-// Merr rezervimet e përdoruesit
+// GET - rezervimet e përdoruesit
 router.get('/my', protect, async (req, res) => {
   try {
     const reservations = await Reservation.find({ user: req.user._id }).sort({ date: -1 });
-    res.json(reservations);
-  } catch (error) {
+    res.json(reservations); // 🔥 KTHE VETËM ARRAY
+  } catch (err) {
+    console.error('Gabim te GET /reservations/my:', err.message);
     res.status(500).json({ message: 'Gabim gjatë marrjes së rezervimeve.' });
   }
 });
