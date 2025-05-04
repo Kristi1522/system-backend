@@ -14,23 +14,23 @@ const orderRoutes = require("./routes/Orders");
 const profileRoutes = require("./routes/profile");
 const reservationRoutes = require('./routes/reservations');
 
-
 const app = express();
-app.use('/api/reservations', reservationRoutes);
-// Middleware
+
+// ✅ Middleware
 app.use(cors());
 app.use(express.json());
+
+// ✅ Rrugët e API-së
+app.use("/auth", authRoutes);
+app.use("/dishes", dishRoutes);
+app.use("/orders", orderRoutes);
+app.use("/profile", profileRoutes);
+app.use('/api/reservations', reservationRoutes); // ⬅️ tani është në vendin e duhur
 
 // Lidhja me MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Lidhja me MongoDB Atlas u bë me sukses"))
   .catch((err) => console.error("❌ Gabim në lidhje me MongoDB Atlas:", err));
-
-// Rrugët e API-së
-app.use("/auth", authRoutes);
-app.use("/dishes", dishRoutes);
-app.use("/orders", orderRoutes);
-app.use("/profile", profileRoutes);
 
 // Endpoint testues për të krijuar një admin default
 app.get("/seed-admin", async (req, res) => {

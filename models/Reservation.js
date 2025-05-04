@@ -4,7 +4,7 @@ const reservationSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "admin",
+      ref: "User",
       required: true,
     },
     date: {
