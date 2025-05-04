@@ -13,10 +13,10 @@ const dishRoutes = require("./routes/dishes");
 const orderRoutes = require("./routes/Orders");
 const profileRoutes = require("./routes/profile");
 const reservationRoutes = require('./routes/reservations');
-app.use('/api/reservations', reservationRoutes);
+
 
 const app = express();
-
+app.use('/api/reservations', reservationRoutes);
 // Middleware
 app.use(cors());
 app.use(express.json());
