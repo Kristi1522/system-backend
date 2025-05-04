@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-require("dotenv").config();
+require("dotenv").config(); // Importojmë dotenv për të përdorur variablat nga .env
 
 // Modelet
 const User = require("./models/User");
@@ -12,30 +12,27 @@ const authRoutes = require("./routes/auth");
 const dishRoutes = require("./routes/dishes");
 const orderRoutes = require("./routes/Orders");
 const profileRoutes = require("./routes/profile");
-const reservationRoutes = require("./routes/reservations"); // ✅ rezervimet
+const reservationRoutes = require('./routes/reservations');
+
 
 const app = express();
-
-// ✅ Middleware (duhet përpara ruterëve)
-app.use(cors({
-  origin: "https://system-gamma-silk.vercel.app", // zëvendëso me domainin tënd të frontend-it
-  credentials: true,
-}));
+app.use('/api/reservations', reservationRoutes);
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// ✅ Rrugët e API-së
-app.use("/auth", authRoutes);
-app.use("/dishes", dishRoutes);
-app.use("/orders", orderRoutes);
-app.use("/profile", profileRoutes);
-app.use("/api/reservations", reservationRoutes); // ✅ Lidhje me ruterin e rezervimeve
-
-// ✅ Lidhja me MongoDB
+// Lidhja me MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Lidhja me MongoDB Atlas u bë me sukses"))
   .catch((err) => console.error("❌ Gabim në lidhje me MongoDB Atlas:", err));
 
-// ✅ Seed admin default
+// Rrugët e API-së
+app.use("/auth", authRoutes);
+app.use("/dishes", dishRoutes);
+app.use("/orders", orderRoutes);
+app.use("/profile", profileRoutes);
+
+// Endpoint testues për të krijuar një admin default
 app.get("/seed-admin", async (req, res) => {
   try {
     const exists = await User.findOne({ email: "admin@example.com" });
@@ -55,7 +52,7 @@ app.get("/seed-admin", async (req, res) => {
   }
 });
 
-// ✅ Debug për pjata
+// Endpoint për të testuar nëse ka pjata në databazë
 app.get("/debug-dishes", async (req, res) => {
   try {
     const dishes = await Dish.find();
@@ -66,12 +63,12 @@ app.get("/debug-dishes", async (req, res) => {
   }
 });
 
-// ✅ Welcome endpoint
+// Test route
 app.get("/", (req, res) => {
   res.send("🚀 Backend REST API i sistemit të restorantit po funksionon!");
 });
 
-// ✅ Start server
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Serveri po dëgjon në portën ${PORT}`);
