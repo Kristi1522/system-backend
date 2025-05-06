@@ -27,5 +27,17 @@ router.post("/by-admin", protect, adminOnly, async (req, res) => {
     res.status(500).json({ message: "Gabim gjatë krijimit të rezervimit." });
   }
 });
+router.get("/", protect, adminOnly, async (req, res) => {
+    try {
+      const reservations = await Reservation.find()
+        .populate("user")
+        .sort({ date: -1 });
+      res.json(reservations);
+    } catch (err) {
+      console.error("Gabim gjatë marrjes së rezervimeve:", err.message);
+      res.status(500).json({ message: "Gabim gjatë marrjes së rezervimeve" });
+    }
+  });
+  
 
 module.exports = router;
