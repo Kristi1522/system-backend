@@ -43,7 +43,4 @@ router.get("/my", protect, async (req, res) => {
     const reservations = await Reservation.find({ user: req.user._id }).sort({ date: -1 });
     res.json(reservations);
   });
-  
-  
-
 module.exports = router;
