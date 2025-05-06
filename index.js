@@ -12,10 +12,12 @@ const authRoutes = require("./routes/auth");
 const dishRoutes = require("./routes/dishes");
 const orderRoutes = require("./routes/Orders");
 const profileRoutes = require("./routes/profile");
+const reservationRoutes = require("./routes/reservations");
 
 const app = express();
 
 // Middleware
+app.use("/api/reservations", reservationRoutes);
 app.use(cors());
 app.use(express.json());
 
