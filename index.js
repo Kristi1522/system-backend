@@ -13,7 +13,7 @@ const dishRoutes = require("./routes/dishes");
 const orderRoutes = require("./routes/Orders");
 const profileRoutes = require("./routes/profile");
 const reservationRoutes = require("./routes/reservations");
-
+const userRoutes = require("./routes/users");
 const app = express();
 
 // Middleware
@@ -32,6 +32,7 @@ app.use("/dishes", dishRoutes);
 app.use("/orders", orderRoutes);
 app.use("/profile", profileRoutes);
 app.use("/api/reservations", reservationRoutes);
+app.use("/api/users", userRoutes);
 
 // Endpoint testues për të krijuar një admin default
 app.get("/seed-admin", async (req, res) => {
