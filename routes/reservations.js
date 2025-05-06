@@ -38,6 +38,12 @@ router.get("/", protect, adminOnly, async (req, res) => {
       res.status(500).json({ message: "Gabim gjatë marrjes së rezervimeve" });
     }
   });
+  // GET /api/reservations/my
+router.get("/my", protect, async (req, res) => {
+    const reservations = await Reservation.find({ user: req.user._id }).sort({ date: -1 });
+    res.json(reservations);
+  });
+  
   
 
 module.exports = router;
