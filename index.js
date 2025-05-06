@@ -12,12 +12,14 @@ const authRoutes = require("./routes/auth");
 const dishRoutes = require("./routes/dishes");
 const orderRoutes = require("./routes/Orders");
 const profileRoutes = require("./routes/profile");
+const reservationRoutes = require("./routes/reservations");
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
 
 // Lidhja me MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -29,6 +31,7 @@ app.use("/auth", authRoutes);
 app.use("/dishes", dishRoutes);
 app.use("/orders", orderRoutes);
 app.use("/profile", profileRoutes);
+app.use("/api/reservations", reservationRoutes);
 
 // Endpoint testues për të krijuar një admin default
 app.get("/seed-admin", async (req, res) => {
