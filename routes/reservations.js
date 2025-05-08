@@ -1,5 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose"); // ✅ e shtojmë për ObjectId
+const mongoose = require("mongoose");
 const Reservation = require("../models/Reservation");
 const { protect } = require("../middleware/authMiddleware");
 const { adminOnly } = require("../middleware/adminMiddleware");
@@ -16,7 +16,7 @@ router.post("/by-admin", protect, adminOnly, async (req, res) => {
 
   try {
     const newReservation = await Reservation.create({
-      user: new mongoose.Types.ObjectId(userId), // ✅ garantojmë ObjectId
+      user: new mongoose.Types.ObjectId(userId),
       date,
       time,
       peopleCount,
@@ -52,6 +52,23 @@ router.get("/my", protect, async (req, res) => {
   } catch (err) {
     console.error("Gabim gjatë marrjes së rezervimeve të mia:", err.message);
     res.status(500).json({ message: "Gabim gjatë marrjes së rezervimeve" });
+  }
+});
+
+// 🔴 Fshi rezervim (vetëm admin)
+router.delete("/:id", protect, adminOnly, async (req, res) => {
+  try {
+    const reservation = await Reservation.findById(req.params.id);
+
+    if (!reservation) {
+      return res.status(404).json({ message: "Rezervimi nuk u gjet." });
+    }
+
+    await reservation.deleteOne();
+    res.json({ message: "✅ Rezervimi u fshi me sukses." });
+  } catch (err) {
+    console.error("❌ Gabim gjatë fshirjes së rezervimit:", err.message);
+    res.status(500).json({ message: "Gabim gjatë fshirjes së rezervimit." });
   }
 });
 
