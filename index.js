@@ -15,7 +15,7 @@ const profileRoutes = require("./routes/profile");
 const reservationRoutes = require("./routes/reservations");
 const userRoutes = require("./routes/users");
 const app = express();
-
+const meetingRoutes = require("./routes/meetings");
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -33,7 +33,7 @@ app.use("/orders", orderRoutes);
 app.use("/profile", profileRoutes);
 app.use("/api/reservations", reservationRoutes);
 app.use("/api/users", userRoutes);
-
+app.use("/api/meetings", meetingRoutes);
 // Endpoint testues për të krijuar një admin default
 app.get("/seed-admin", async (req, res) => {
   try {
