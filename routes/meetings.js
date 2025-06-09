@@ -6,7 +6,7 @@ const { adminOnly } = require("../middleware/adminMiddleware");
 
 const router = express.Router();
 
-// 🔸 Krijim takimi nga admini
+//  Krijim takimi nga admini
 router.post("/by-admin", protect, adminOnly, async (req, res) => {
   const { userId, date, hour, topic } = req.body;
 
@@ -30,7 +30,7 @@ router.post("/by-admin", protect, adminOnly, async (req, res) => {
   }
 });
 
-// 🔸 Merr të gjitha takimet (vetëm admin)
+//  Merr të gjitha takimet (vetëm admin)
 router.get("/", protect, adminOnly, async (req, res) => {
   try {
     const meetings = await Meeting.find().populate("user").sort({ date: -1 });
@@ -40,7 +40,7 @@ router.get("/", protect, adminOnly, async (req, res) => {
   }
 });
 
-// 🔸 Merr takimet e user-it
+//  Merr takimet e user-it
 router.get("/my", protect, async (req, res) => {
   try {
     const meetings = await Meeting.find({ user: req.user._id }).sort({ date: -1 });
@@ -50,7 +50,7 @@ router.get("/my", protect, async (req, res) => {
   }
 });
 
-// 🔸 Fshi takim (vetëm admin)
+//  Fshi takim (vetëm admin)
 router.delete("/:id", protect, adminOnly, async (req, res) => {
   try {
     const meeting = await Meeting.findById(req.params.id);

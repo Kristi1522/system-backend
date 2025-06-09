@@ -5,7 +5,7 @@ const { adminOnly } = require("../middleware/adminMiddleware");
 
 const router = express.Router();
 
-// ✅ Merr të gjitha pjatat – për të gjithë përdoruesit e loguar
+// Merr të gjitha pjatat – për të gjithë përdoruesit e loguar
 router.get("/", protect, async (req, res) => {
   try {
     const dishes = await Dish.find();
@@ -16,7 +16,7 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
-// ✅ Shto një pjatë – vetëm admini
+//  Shto një pjatë – vetëm admini
 router.post("/", protect, adminOnly, async (req, res) => {
   const { name, description, price } = req.body;
 
@@ -34,7 +34,7 @@ router.post("/", protect, adminOnly, async (req, res) => {
   }
 });
 
-// ✅ Përditëso një pjatë – vetëm admini
+// Përditëso një pjatë – vetëm admini
 router.put("/:id", protect, adminOnly, async (req, res) => {
   const { name, description, price } = req.body;
 
@@ -56,7 +56,7 @@ router.put("/:id", protect, adminOnly, async (req, res) => {
   }
 });
 
-// ✅ Fshi një pjatë – vetëm admini
+//  Fshi një pjatë – vetëm admini
 router.delete("/:id", protect, adminOnly, async (req, res) => {
   try {
     const deletedDish = await Dish.findByIdAndDelete(req.params.id);

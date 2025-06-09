@@ -17,8 +17,8 @@ router.post("/login", async (req, res) => {
     if (user && (await user.matchPassword(password))) {
       console.log("✅ Password përputhet");
 
-      // Token pa skadencë
-      const token = jwt.sign({ id: user._id }, "jwt_secret_key"); // pa expiresIn
+      // Token 
+      const token = jwt.sign({ id: user._id }, "jwt_secret_key"); 
 
       return res.json({
         _id: user._id,
@@ -36,7 +36,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// 🧑‍💼 REGISTER – vetëm nga admini i loguar
+//  REGISTER – vetëm nga admini i loguar
 router.post("/register", protect, async (req, res) => {
   const { email, password, role } = req.body;
 
